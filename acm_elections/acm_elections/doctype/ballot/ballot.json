@@ -1,0 +1,95 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "format:BAL-{#####}",
+ "creation": "2026-10-08 16:42:21.462076",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "election",
+  "voter",
+  "submitted_at",
+  "choices_section",
+  "choices"
+ ],
+ "fields": [
+  {
+   "fieldname": "election",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Election",
+   "options": "Election",
+   "read_only": 1
+  },
+  {
+   "fieldname": "voter",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Voter",
+   "options": "Voter",
+   "read_only": 1
+  },
+  {
+   "fieldname": "submitted_at",
+   "fieldtype": "Datetime",
+   "in_list_view": 1,
+   "label": "Submitted At",
+   "read_only": 1
+  },
+  {
+   "fieldname": "choices_section",
+   "fieldtype": "Section Break",
+   "label": "Choices"
+  },
+  {
+   "fieldname": "choices",
+   "fieldtype": "Table",
+   "label": "Choices",
+   "options": "Ballot Choice",
+   "read_only": 1
+  }
+ ],
+ "grid_page_length": 50,
+ "in_create": 1,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-10-08 16:42:21.462076",
+ "modified_by": "Administrator",
+ "module": "ACM Elections",
+ "name": "Ballot",
+ "naming_rule": "Expression (old style)",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Election Admin",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": []
+}
