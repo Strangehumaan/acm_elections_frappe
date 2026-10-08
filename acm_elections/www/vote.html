@@ -1,0 +1,124 @@
+{% extends "templates/web.html" %}
+
+{% block title %}{{ _("Vote") }}{% endblock %}
+
+{%- block style %}
+<style>
+	.vote-page { max-width: 640px; margin: 0 auto; padding: 24px 0 48px; }
+	.vote-card { border: 1px solid var(--border-color, #e2e8f0); border-radius: 10px; padding: 16px 20px; margin-bottom: 16px; background: var(--card-bg, #fff); }
+	.vote-card legend { font-size: 1.1rem; font-weight: 600; padding: 0 4px; width: auto; border: 0; margin: 0; }
+	.vote-message { text-align: center; font-size: 1.1rem; padding: 32px 20px; }
+	.vote-notice { color: #92400e; background: #fef3c7; border-radius: 6px; padding: 8px 12px; }
+	.vote-option { display: flex; gap: 12px; align-items: center; padding: 10px 8px; border-radius: 8px; cursor: pointer; margin: 0; font-weight: normal; }
+	.vote-option:hover { background: #f1f5f9; }
+	.vote-option img { flex: none; background: #e2e8f0; border-radius: 50%; padding: 8px; }
+	.vote-option small { display: block; color: #64748b; }
+	.vote-missing { border-color: #dc2626; box-shadow: 0 0 0 2px #fecaca; }
+	.vote-missing legend::after { content: " — please choose one"; color: #dc2626; font-weight: normal; font-size: 0.9rem; }
+	#review-list dt { font-weight: 600; margin-top: 8px; }
+	#review-list dd { margin-left: 0; }
+</style>
+{% endblock -%}
+
+{% block page_content %}
+<div class="vote-page">
+{% if error %}
+	<div class="vote-card vote-message"><p>{{ error | e }}</p></div>
+{% else %}
+	<div id="ballot">
+		<h1>{{ election_title | e }}</h1>
+		<p>
+			Hi {{ voter_name | e }}, choose one candidate for each position.
+			Voting closes on {{ frappe.format(end_time, {"fieldtype": "Datetime"}) }}.
+		</p>
+		<p class="vote-notice">Your choices will be visible to the election committee.</p>
+
+		<form id="ballot-form" novalidate>
+		{% for p in positions %}
+			<fieldset class="vote-card" data-position="{{ p.position | e }}">
+				<legend>{{ p.position | e }}</legend>
+				{% for c in p.candidates %}
+				<label class="vote-option">
+					<input type="radio" name="{{ p.position | e }}" value="{{ c.name | e }}" data-label="{{ c.full_name | e }}">
+					<img src="/assets/acm_elections/images/candidate.svg" alt="" width="40" height="40">
+					<span><b>{{ c.full_name | e }}</b>{% if c.bio %}<small>{{ c.bio | e }}</small>{% endif %}</span>
+				</label>
+				{% endfor %}
+			</fieldset>
+		{% endfor %}
+			<button type="submit" class="btn btn-primary btn-lg">Review my choices</button>
+		</form>
+	</div>
+
+	<div id="review" class="vote-card" hidden>
+		<h2>Confirm your vote</h2>
+		<p>Please check your choices. You can't change your vote after confirming.</p>
+		<dl id="review-list"></dl>
+		<button type="button" id="back" class="btn btn-default">Back</button>
+		<button type="button" id="confirm" class="btn btn-primary">Confirm my vote</button>
+	</div>
+
+	<div id="done" class="vote-card vote-message" hidden><p></p></div>
+{% endif %}
+</div>
+{% endblock %}
+
+{%- block script %}
+{{ super() }}
+<script>
+frappe.ready(() => {
+	const form = document.getElementById("ballot-form");
+	if (!form) return; // error page: nothing to do
+
+	const token = {{ token | tojson }};
+	let choices = {};
+
+	// Show exactly one of the three panels.
+	const show = (id) => {
+		["ballot", "review", "done"].forEach((x) => (document.getElementById(x).hidden = x !== id));
+		window.scrollTo(0, 0);
+	};
+
+	// Step 1: every position needs a pick, then list the picks for review.
+	form.addEventListener("submit", (event) => {
+		event.preventDefault();
+		choices = {};
+		const list = document.getElementById("review-list");
+		list.replaceChildren();
+		form.querySelectorAll("fieldset").forEach((fieldset) => {
+			const position = fieldset.dataset.position;
+			const picked = fieldset.querySelector("input:checked");
+			fieldset.classList.toggle("vote-missing", !picked);
+			if (!picked) return;
+			choices[position] = picked.value;
+			const dt = document.createElement("dt");
+			dt.textContent = position;
+			const dd = document.createElement("dd");
+			dd.textContent = picked.dataset.label;
+			list.append(dt, dd);
+		});
+		const missing = form.querySelector(".vote-missing");
+		if (missing) {
+			missing.scrollIntoView({ behavior: "smooth", block: "center" });
+			return;
+		}
+		show("review");
+	});
+
+	document.getElementById("back").addEventListener("click", () => show("ballot"));
+
+	// Step 2: send the ballot. On an error, frappe.call shows the server's message.
+	document.getElementById("confirm").addEventListener("click", (event) => {
+		frappe.call({
+			method: "acm_elections.voting.submit_ballot",
+			args: { token, choices: JSON.stringify(choices) },
+			btn: event.currentTarget,
+			callback: (r) => {
+				document.querySelector("#done p").textContent = r.message.message;
+				show("done");
+			},
+		});
+	});
+});
+</script>
+{% endblock -%}
