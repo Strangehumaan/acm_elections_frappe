@@ -74,10 +74,13 @@ app_license = "mit"
 # ----------
 
 # add methods and filters to jinja environment
-# jinja = {
-# 	"methods": "acm_elections.utils.jinja_methods",
-# 	"filters": "acm_elections.utils.jinja_filters"
-# }
+jinja = {
+	# callable from Print Format templates as get_results(...) / get_ballot_register(...)
+	"methods": [
+		"acm_elections.results.get_results",
+		"acm_elections.results.get_ballot_register",
+	],
+}
 
 # Installation
 # ------------

@@ -7,6 +7,7 @@ from frappe.model.document import Document
 from frappe.utils import get_datetime
 
 from acm_elections.invitations import send_links
+from acm_elections.results import get_results
 
 
 class Election(Document):
@@ -17,6 +18,7 @@ class Election(Document):
 		self.validate_window()
 		self.validate_positions()
 		self.validate_positions_frozen()
+		self.validate_tie_winners()
 
 	def validate_window(self):
 		if get_datetime(self.end_time) <= get_datetime(self.start_time):
@@ -38,6 +40,21 @@ class Election(Document):
 			return
 		if [p.position_name for p in before.positions] != [p.position_name for p in self.positions]:
 			frappe.throw(_("Positions cannot be changed once the election has left Draft."))
+
+	def validate_tie_winners(self):
+		picked = [p for p in self.positions if p.tie_winner]
+		if not picked:
+			return
+		if self.status != "Closed":
+			frappe.throw(_("A tie winner can only be picked after the election is closed."))
+		tied = {p["position"]: p["tied"] for p in get_results(self.name)["positions"]}
+		for row in picked:
+			if row.tie_winner not in tied[row.position_name]:
+				frappe.throw(
+					_("{0} is not tied for first place in {1}.").format(
+						frappe.db.get_value("Candidate", row.tie_winner, "full_name"), row.position_name
+					)
+				)
 
 	# Buttons on the Election form call these through frm.call().
 
