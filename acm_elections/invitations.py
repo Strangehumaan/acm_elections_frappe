@@ -42,5 +42,7 @@ def send_links(election: str, kind: str) -> int:
 			},
 			reference_doctype="Voter",
 			reference_name=voter.name,
+			# the link is a credential: drop the body from Email Queue once sent
+			redact_message_after_send=True,
 		)
 	return len(voters)

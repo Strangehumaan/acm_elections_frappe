@@ -5,6 +5,8 @@ import frappe
 
 def get_results(election: str) -> dict:
 	"""Per-position counts (highest first), the winner, and any tie for first place."""
+	# Callable from any Jinja template (hooks.py), so check access here, not just in the caller.
+	frappe.has_permission("Election", "read", election, throw=True)
 	doc = frappe.get_doc("Election", election)
 	counts = dict(
 		frappe.db.sql(
@@ -49,6 +51,8 @@ def get_results(election: str) -> dict:
 
 def get_ballot_register(election: str) -> list[dict]:
 	"""One row per ballot: who voted, when, and their pick for each position (by name)."""
+	frappe.has_permission("Election", "read", election, throw=True)
+	frappe.has_permission("Ballot", "read", throw=True)
 	ballots = frappe.get_all("Ballot", {"election": election}, ["name", "voter", "submitted_at"])
 	if not ballots:
 		return []

@@ -1,6 +1,5 @@
 {
  "actions": [],
- "allow_rename": 1,
  "autoname": "format:BAL-{#####}",
  "creation": "2026-10-08 16:42:21.462076",
  "doctype": "DocType",
@@ -29,7 +28,8 @@
    "in_list_view": 1,
    "label": "Voter",
    "options": "Voter",
-   "read_only": 1
+   "read_only": 1,
+   "unique": 1
   },
   {
    "fieldname": "submitted_at",
@@ -55,7 +55,7 @@
  "in_create": 1,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-10-08 16:42:21.462076",
+ "modified": "2026-10-08 17:09:31.729001",
  "modified_by": "Administrator",
  "module": "ACM Elections",
  "name": "Ballot",
@@ -63,28 +63,18 @@
  "owner": "Administrator",
  "permissions": [
   {
-   "create": 1,
-   "delete": 1,
-   "email": 1,
    "export": 1,
    "print": 1,
    "read": 1,
    "report": 1,
-   "role": "Election Admin",
-   "share": 1,
-   "write": 1
+   "role": "Election Admin"
   },
   {
-   "create": 1,
-   "delete": 1,
-   "email": 1,
    "export": 1,
    "print": 1,
    "read": 1,
    "report": 1,
-   "role": "System Manager",
-   "share": 1,
-   "write": 1
+   "role": "System Manager"
   }
  ],
  "row_format": "Dynamic",

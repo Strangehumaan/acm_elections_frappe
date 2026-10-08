@@ -10,3 +10,7 @@ class Ballot(Document):
 	def validate(self):
 		if not self.is_new():
 			frappe.throw(_("Ballots cannot be changed."))
+
+	def on_trash(self):
+		# Deleting a ballot would drop a vote while the voter stays marked as voted.
+		frappe.throw(_("Ballots cannot be deleted."))

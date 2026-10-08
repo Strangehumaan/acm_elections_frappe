@@ -66,3 +66,12 @@ class TestInvitations(FrappeTestCase):
 	def test_turnout(self):
 		frappe.db.set_value("Voter", self.voters[0], "has_voted", 1)
 		self.assertEqual(self.election.get_turnout(), {"voted": 1, "total": 3})
+
+	def test_links_redacted_after_send(self):
+		send_links(self.election.name, "invite")
+		flags = frappe.get_all(
+			"Email Queue",
+			{"reference_doctype": "Voter", "reference_name": ("in", self.voters)},
+			pluck="redact_message_after_send",
+		)
+		self.assertEqual(flags, [1, 1, 1])

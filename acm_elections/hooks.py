@@ -86,7 +86,8 @@ jinja = {
 # ------------
 
 # before_install = "acm_elections.install.before_install"
-# after_install = "acm_elections.install.after_install"
+after_install = "acm_elections.setup.grant_data_import"
+after_migrate = "acm_elections.setup.grant_data_import"
 
 # Uninstallation
 # ------------

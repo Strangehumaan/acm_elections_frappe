@@ -2,11 +2,15 @@ import frappe
 from frappe.tests.utils import FrappeTestCase
 
 from acm_elections.tasks import update_election_status
-from acm_elections.tests.factories import make_election
+from acm_elections.tests.factories import make_candidate, make_election
 
 
-def status_after_tick(**election_kwargs):
-	election = make_election(**election_kwargs)
+def status_after_tick(status, candidates_for=("Chair", "Treasurer"), **election_kwargs):
+	"""Election in `status` with a candidate for each of `candidates_for`, after one scheduler run."""
+	election = make_election(status="Draft", **election_kwargs)
+	for position in candidates_for:
+		make_candidate(election.name, position)
+	election.db_set("status", status)
 	update_election_status()
 	return frappe.db.get_value("Election", election.name, "status")
 
@@ -26,3 +30,7 @@ class TestTasks(FrappeTestCase):
 
 	def test_closed_stays_closed(self):
 		self.assertEqual(status_after_tick(status="Closed", start_offset_hours=-1, end_offset_hours=1), "Closed")
+
+	def test_draft_with_empty_position_stays_draft(self):
+		status = status_after_tick(candidates_for=("Chair",), status="Draft", start_offset_hours=-1, end_offset_hours=1)
+		self.assertEqual(status, "Draft")
