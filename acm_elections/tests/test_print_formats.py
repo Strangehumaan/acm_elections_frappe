@@ -51,3 +51,9 @@ class TestPrintFormats(FrappeTestCase):
 		self.assertIn("Zoya", html)
 		self.assertIn("Bravo", html)
 		self.assertIn("Tango", html)
+
+	def test_ballot_register_pdf_is_landscape(self):
+		from frappe.utils.pdf import read_options_from_html
+
+		_html, options = read_options_from_html(self.render("Ballot Register"))
+		self.assertEqual(options.get("orientation"), "Landscape")
