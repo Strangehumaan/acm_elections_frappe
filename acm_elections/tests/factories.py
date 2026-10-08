@@ -25,3 +25,15 @@ def make_election(
 	if status != "Draft":
 		election.db_set("status", status)
 	return election
+
+
+def make_candidate(election, position, full_name="Test Candidate"):
+	return frappe.get_doc(
+		{"doctype": "Candidate", "election": election, "position": position, "full_name": full_name}
+	).insert()
+
+
+def make_voter(election, email, full_name="Test Voter"):
+	return frappe.get_doc(
+		{"doctype": "Voter", "election": election, "email": email, "full_name": full_name}
+	).insert()
