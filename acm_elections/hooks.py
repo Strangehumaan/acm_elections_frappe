@@ -154,23 +154,12 @@ app_license = "mit"
 # Scheduled Tasks
 # ---------------
 
-# scheduler_events = {
-# 	"all": [
-# 		"acm_elections.tasks.all"
-# 	],
-# 	"daily": [
-# 		"acm_elections.tasks.daily"
-# 	],
-# 	"hourly": [
-# 		"acm_elections.tasks.hourly"
-# 	],
-# 	"weekly": [
-# 		"acm_elections.tasks.weekly"
-# 	],
-# 	"monthly": [
-# 		"acm_elections.tasks.monthly"
-# 	],
-# }
+scheduler_events = {
+	"cron": {
+		# every 5 minutes: open/close elections by their start and end times
+		"*/5 * * * *": ["acm_elections.tasks.update_election_status"],
+	},
+}
 
 # Testing
 # -------
