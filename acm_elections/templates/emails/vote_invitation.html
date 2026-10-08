@@ -1,0 +1,18 @@
+<p>Hi {{ full_name }},</p>
+
+{% if is_reminder %}
+<p>Reminder: you haven't voted yet in <b>{{ election_title }}</b>.</p>
+{% else %}
+<p>You're invited to vote in <b>{{ election_title }}</b>.</p>
+{% endif %}
+
+<p>Voting is open from <b>{{ start_time }}</b> to <b>{{ end_time }}</b>.</p>
+
+<p>
+	<a href="{{ link }}" style="display: inline-block; padding: 10px 18px; background: #2563eb;
+		color: #ffffff; text-decoration: none; border-radius: 6px;">Open my ballot</a>
+</p>
+<p>If the button doesn't work, copy this link into your browser:<br>{{ link }}</p>
+
+<p>This link is personal — please don't forward it. If you receive a newer email, only the newest link works.</p>
+<p>Your choices will be visible to the election committee.</p>

@@ -6,6 +6,8 @@ from frappe import _
 from frappe.model.document import Document
 from frappe.utils import get_datetime
 
+from acm_elections.invitations import send_links
+
 
 class Election(Document):
 	def validate(self):
@@ -36,3 +38,26 @@ class Election(Document):
 			return
 		if [p.position_name for p in before.positions] != [p.position_name for p in self.positions]:
 			frappe.throw(_("Positions cannot be changed once the election has left Draft."))
+
+	# Buttons on the Election form call these through frm.call().
+
+	@frappe.whitelist()
+	def send_invitations(self) -> int:
+		return send_links(self.name, "invite")
+
+	@frappe.whitelist()
+	def send_reminders(self) -> int:
+		return send_links(self.name, "reminder")
+
+	@frappe.whitelist()
+	def close_now(self) -> None:
+		if self.status != "Open":
+			frappe.throw(_("Only an Open election can be closed."))
+		self.db_set("status", "Closed")
+
+	@frappe.whitelist()
+	def get_turnout(self) -> dict:
+		return {
+			"voted": frappe.db.count("Voter", {"election": self.name, "has_voted": 1}),
+			"total": frappe.db.count("Voter", {"election": self.name}),
+		}
