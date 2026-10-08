@@ -35,7 +35,8 @@ frappe.ui.form.on("Election", {
 
 function send_links(frm, method, question) {
 	frappe.confirm(question, () =>
-		frm.call({ method, freeze: true }).then((r) => {
+		// doc: frm.doc makes this call the Election's own method (not a module function)
+		frm.call({ doc: frm.doc, method, freeze: true }).then((r) => {
 			frappe.show_alert({ message: __("{0} emails queued", [r.message]), indicator: "green" });
 			frm.reload_doc();
 		})
