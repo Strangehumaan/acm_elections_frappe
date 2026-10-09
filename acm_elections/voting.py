@@ -47,7 +47,7 @@ def get_ballot_context(token: str | None) -> dict:
 	candidates = frappe.get_all(
 		"Candidate",
 		filters={"election": election.name},
-		fields=["name", "full_name", "bio", "position"],
+		fields=["name", "full_name", "bio", "position", "photo"],
 		order_by="full_name asc",
 	)
 	return {

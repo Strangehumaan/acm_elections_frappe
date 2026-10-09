@@ -12,6 +12,7 @@
 	.vote-option { display: flex; gap: 12px; align-items: center; padding: 10px 8px; border-radius: 8px; cursor: pointer; margin: 0; font-weight: normal; }
 	.vote-option:hover { background: #f1f5f9; }
 	.vote-option img { flex: none; background: #e2e8f0; border-radius: 50%; padding: 8px; }
+	.vote-option img.vote-photo { padding: 0; object-fit: cover; }
 	.vote-option small { display: block; color: #64748b; }
 	.vote-missing { border-color: #dc2626; box-shadow: 0 0 0 2px #fecaca; }
 	.vote-missing legend::after { content: " — please choose one"; color: #dc2626; font-weight: normal; font-size: 0.9rem; }
@@ -40,7 +41,11 @@
 				{% for c in p.candidates %}
 				<label class="vote-option">
 					<input type="radio" name="{{ p.position | e }}" value="{{ c.name | e }}" data-label="{{ c.full_name | e }}">
+					{% if c.photo %}
+					<img class="vote-photo" src="{{ c.photo | e }}" alt="{{ c.full_name | e }}" width="56" height="56">
+					{% else %}
 					<img src="/assets/acm_elections/images/candidate.svg" alt="" width="40" height="40">
+					{% endif %}
 					<span><b>{{ c.full_name | e }}</b>{% if c.bio %}<small>{{ c.bio | e }}</small>{% endif %}</span>
 				</label>
 				{% endfor %}

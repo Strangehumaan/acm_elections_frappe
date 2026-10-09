@@ -10,7 +10,8 @@
   "full_name",
   "election",
   "position",
-  "bio"
+  "bio",
+  "photo"
  ],
  "fields": [
   {
@@ -31,16 +32,24 @@
   },
   {
    "fieldname": "position",
-   "fieldtype": "Data",
+   "fieldtype": "Select",
    "in_list_view": 1,
    "in_standard_filter": 1,
    "label": "Position",
-   "reqd": 1
+   "reqd": 1,
+   "description": "Choose the Election first; this lists its positions."
   },
   {
    "fieldname": "bio",
    "fieldtype": "Small Text",
    "label": "Bio"
+  },
+  {
+   "fieldname": "photo",
+   "label": "Photo",
+   "fieldtype": "Attach Image",
+   "make_attachment_public": 1,
+   "description": "Optional. Shown on the voting page."
   }
  ],
  "grid_page_length": 50,
@@ -85,5 +94,6 @@
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [],
- "title_field": "full_name"
+ "title_field": "full_name",
+ "image_field": "photo"
 }
