@@ -32,7 +32,6 @@
 			Hi {{ voter_name | e }}, choose one candidate for each position.
 			Voting closes on {{ frappe.format(end_time, {"fieldtype": "Datetime"}) }}.
 		</p>
-		<p class="vote-notice">Your choices will be visible to the election committee.</p>
 
 		<form id="ballot-form" novalidate>
 		{% for p in positions %}
