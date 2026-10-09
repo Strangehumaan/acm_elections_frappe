@@ -66,7 +66,7 @@ You need a working [Frappe v15 bench](https://docs.frappe.io/framework/user/en/i
 
 ```bash
 cd ~/frappe-bench
-bench get-app https://github.com/Strangehumaan/acm_elections_frappe --branch develop
+bench get-app https://github.com/Strangehumaan/acm_elections_frappe --branch main
 bench --site your-site.localhost install-app acm_elections
 bench --site your-site.localhost enable-scheduler
 ```
